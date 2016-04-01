@@ -1,0 +1,16 @@
+<ion-view view-title="Sudoku">
+  <ion-content class="padding">
+    <sudoku-grid grid="sudoku.grid"></sudoku-grid>
+
+    <div class="bar bar-footer">
+      <div class="center">
+        <button class="button button-outline button-positive center" on-tap="sudoku.newGrid()">
+          New Grid
+        </button>
+        <button class="button button-outline button-balanced center" on-tap="sudoku.shareGrid()">
+          Share
+        </button>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
