@@ -1,0 +1,21 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <div class="bar bar-header bar-energized">
+      <h1 class="title title-left">Load a grid</h1>
+    </div>
+  </ion-header-bar>
+  <ion-content class="grids-list__modal">
+    <ion-list  show-delete="shouldShowDelete"
+                 show-reorder="shouldShowReorder"
+                 can-swipe="listCanSwipe">
+      <ion-item ng-repeat="grid in sudoku.getGrids()"
+                on-tap="sudoku.loadGrid(grid, $index)"
+                class="item-remove-animate item item-left-editable item-right-editable">
+        <span class="icon-left ion-person padding"></span>
+        <span>{{grid.owner}}</span>
+        <span class="icon-left ion-calendar padding"></span>
+        <span>{{sudoku.formatDate(grid.date)}}</span>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>

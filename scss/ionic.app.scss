@@ -19,12 +19,13 @@ $dark:                            #444 !default;
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
-@import "www/lib/ionic/scss/ionic";
+@import "www/lib/ionic/scss/ionic.scss";
 
 /* App */
 
 // Colors
-$grid-color: #444;
+$grey: #444;
+$light-grey: #EEE;
 
 .center{
   margin: auto;
@@ -34,11 +35,11 @@ $grid-color: #444;
 
 // Use BEM notation
 .sudoku-grid__cell {
-  border: solid 1px $grid-color;
+  border: solid 1px $grey;
   text-align: center;
 
   &:hover {
-    background: #EEE;
+    background: $light-grey;
     cursor: pointer;
   }
 
@@ -47,5 +48,17 @@ $grid-color: #444;
     font-weight: 800;
   }
 }
+
+.grids-list__modal {
+  ion-item.item:hover {
+    background-color: $light-grey;
+    cursor: pointer;
+  }
+}
+
+.title-left {
+  left: 0!important;
+}
+
 
 

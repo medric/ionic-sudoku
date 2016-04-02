@@ -1,6 +1,6 @@
 {
   "name": "sudoku",
-  "app_id": "",
+  "app_id": "e54d2369",
   "gulpStartupTasks": [
     "sass",
     "watch"

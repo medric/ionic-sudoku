@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('sudoku', ['ionic', 'sudoku.controllers', 'sudoku.services', 'sudoku.directives', 'firebase'])
-  .run(function ($ionicPlatform, $rootScope) {
+  .run(function ($ionicPlatform, $rootScope, AccountService, SudokuNetworkService) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -22,6 +22,10 @@ angular.module('sudoku', ['ionic', 'sudoku.controllers', 'sudoku.services', 'sud
 
       // Set up globals
       $rootScope.gridsRef = new Firebase('https://medric-sudoku.firebaseio.com/grids'); // firebase
+
+      // Services
+      $rootScope.AccountService = AccountService;
+      $rootScope.SudokuNetworkService = SudokuNetworkService;
     });
   })
   .config(function ($stateProvider, $urlRouterProvider) {
@@ -32,11 +36,13 @@ angular.module('sudoku', ['ionic', 'sudoku.controllers', 'sudoku.services', 'sud
     // Each state's controller can be found in controllers.js
     $stateProvider
 
-    // setup an abstract state for the tabs directive
+      // setup an abstract state for the tabs directive
       .state('tab', {
         url: '/tab',
         abstract: true,
-        templateUrl: 'templates/tabs.html'
+        templateUrl: 'templates/tabs.html',
+        controller: 'MainCtrl',
+        controllerAs: 'main'
       })
 
       // Each tab has its own nav history stack:
@@ -45,7 +51,8 @@ angular.module('sudoku', ['ionic', 'sudoku.controllers', 'sudoku.services', 'sud
         views: {
           'tab-account': {
             templateUrl: 'templates/tab-account.html',
-            controller: 'AccountCtrl'
+            controller: 'AccountCtrl',
+            controllerAs: 'account'
           }
         }
       })
@@ -60,8 +67,24 @@ angular.module('sudoku', ['ionic', 'sudoku.controllers', 'sudoku.services', 'sud
         }
       })
 
+      // Sign up page
+      .state('signup', {
+        url: '/signup',
+        templateUrl: 'templates/signup.html',
+        controller: 'AccountCtrl',
+        controllerAs: 'account'
+      })
+
+      // Sign in page
+      .state('signin', {
+        url: '/signin',
+        templateUrl: 'templates/signin.html',
+        controller: 'AccountCtrl',
+        controllerAs: 'account'
+      })
+
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/tab/sudoku');
+    $urlRouterProvider.otherwise('/tab/account');
   });
 
 

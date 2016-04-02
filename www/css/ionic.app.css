@@ -9746,3 +9746,10 @@ a.button {
   .sudoku-grid__cell .sudoku-grid__cell--selected {
     color: #E53935;
     font-weight: 800; }
+
+.grids-list__modal ion-item.item:hover {
+  background-color: #EEE;
+  cursor: pointer; }
+
+.title-left {
+  left: 0 !important; }

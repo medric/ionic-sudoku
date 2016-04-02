@@ -1,0 +1,24 @@
+<ion-view view-title="Sign up">
+  <ion-content>
+      <div class="sudoku-signup">
+        <form ng-submit="account.signUp()">
+          <div class="padding">
+            <label class="item item-input">
+              <input type="text" placeholder="Email" ng-model="account.credentials.email">
+            </label>
+          </div>
+          <div class="padding">
+            <label class="item item-input">
+              <input type="password" placeholder="Password" ng-model="account.credentials.password">
+            </label>
+          </div>
+          <div class="padding">
+            <button type="submit" class="button button-block button-positive">Sign up</button>
+          </div>
+        </form>
+      </div>
+      <div class="bar bar-footer">
+        <a class="button icon-left ion-chevron-left button-clear button-dark" ui-sref="tab.account">Back</a>
+      </div>
+  </ion-content>
+</ion-view>

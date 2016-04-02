@@ -1,5 +1,5 @@
 /*
-Error: File to import not found or unreadable: www/lib/ionic/scss/ionic.
+Error: File to import not found or unreadable: www/lib/ionic/scss/ionic.scss.
        Load paths:
          
         on line 22 of ionic.app.scss
@@ -9,12 +9,12 @@ Error: File to import not found or unreadable: www/lib/ionic/scss/ionic.
 19: $ionicons-font-path: "../lib/ionic/fonts" !default;
 20: 
 21: // Include all of Ionic
-22: @import "www/lib/ionic/scss/ionic";
+22: @import "www/lib/ionic/scss/ionic.scss";
 23: 
 24: /* App *\/
 25: 
 26: // Colors
-27: $grid-color: #444;
+27: $grey: #444;
 
 Backtrace:
 ionic.app.scss:22
@@ -60,4 +60,4 @@ ionic.app.scss:22
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: www/lib/ionic/scss/ionic.\A        Load paths:\A          \A         on line 22 of ionic.app.scss\A \A 17: \A 18: // The path for our ionicons font files, relative to the built CSS in www/css\A 19: $ionicons-font-path: \"../lib/ionic/fonts\" !default;\A 20: \A 21: // Include all of Ionic\A 22: @import \"www/lib/ionic/scss/ionic\";\A 23: \A 24: /* App */\A 25: \A 26: // Colors\A 27: $grid-color: #444;"; }
+  content: "Error: File to import not found or unreadable: www/lib/ionic/scss/ionic.scss.\A        Load paths:\A          \A         on line 22 of ionic.app.scss\A \A 17: \A 18: // The path for our ionicons font files, relative to the built CSS in www/css\A 19: $ionicons-font-path: \"../lib/ionic/fonts\" !default;\A 20: \A 21: // Include all of Ionic\A 22: @import \"www/lib/ionic/scss/ionic.scss\";\A 23: \A 24: /* App */\A 25: \A 26: // Colors\A 27: $grey: #444;"; }

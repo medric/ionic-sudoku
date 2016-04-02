@@ -1,49 +1,158 @@
 function SudokuModel() {
   // private
-  var grid = [];
+  var grid = [],
+      blockingNumbers,
+      stepCount, x, y, dX;
 
-  // public
   /**
-   * Initializes the grid
+   * Init position / start
+   * @param _x
+   * @param _y
+     */
+  var initPosition = function(_x, _y) {
+    dX = 1;
+    x = _x;
+    y = _y;
+  }
+
+  /**
+   * Init blockingNumbers lists for each cell
    */
-  var initGrid = function() {
-    for(var x = 0; x < 9; x++) {
-      grid[x] = [];
-      for(var y = 0; y < 9; y++) {
-        grid[x][y] = {};
-        grid[x][y].value = getRandomArbitrary(1, 9);
+  var initBlockingNumbers = function() {
+    blockingNumbers = [];
+
+    for(var i = 0; i < 9; i++) {
+      blockingNumbers[i] = [];
+      for(var j = 0; j < 9; j++) {
+        blockingNumbers[i][j] = [];
       }
     }
   }
 
   /**
-   *
-   * @param y
+   *  Generates numbers / go all over the grid and check each position
+   * @param continueEnabled
+     */
+  var generateNumber = function() {
+    var value;
+
+    if(grid[x][y].value === 0) {
+      do {
+        value = getRandomArbitrary(1, 9);
+      }
+      while(blockingNumbers[x][y].length !== 9 && isBlockingNumber(value));
+
+      // blocking step
+      if(blockingNumbers[x][y].length === 9) {
+        // empty
+        blockingNumbers[x][y] = [];
+
+        grid[x][y].value = 0;
+
+        // go back
+        previousPosition();
+
+        blockingNumbers[x][y].push(grid[x][y].value);
+        grid[x][y].value = 0;
+      } else {
+        grid[x][y].value = value;
+
+        // move forward
+        nextPosition();
+      }
+    }
+  }
+
+  /**
+   * Goes to next position
+   */
+  var nextPosition = function() {
+    // go to next position
+    x += dX;
+
+    // side effect
+    if(x === -1 || x === 9) {
+      dX *= -1;
+      x += dX;
+
+      // next row
+      y++;
+
+      // reset column
+      if(y === 9) {
+        y = 0;
+
+        if (x == 0) {
+          x = 8;
+        }
+        else if(x == 8) {
+          x = 0;
+        }
+
+        dX *= -1;
+      }
+    }
+  }
+
+  /**
+   * Goes to previous position
+   */
+  var previousPosition = function() {
+    // go to previous position
+    x -= dX;
+
+    if(x === -1 || x === 9) {
+      dX *= -1;
+      x -= dX;
+
+      // previous row
+      y--;
+
+      // y < 0
+      if(y === -1) {
+        y = 8;
+
+        if(x === 0) {
+          x = 8;
+        }
+        else if(x === 8) {
+          x = 0;
+        }
+
+        dX *= -1;
+      }
+    }
+  }
+
+  /**
+   * Checks if the given number is suitable for the current cell
    * @param value
    * @returns {boolean}
      */
-  var checkRow = function(y, value) {
-    for(var x = 0; x < 9; x++)
-    {
-      if(grid[x][y].value === value) {
-        return false;
-      }
+  var isBlockingNumber = function(value) {
+    if(blockingNumbers[x][y].indexOf(value) !== -1) {
+      return true;
+    } else if(checkPosition(x, y)) {
+      log('ff', value);
+      blockingNumbers[x][y].push(value);
+      return true;
     }
-
-    return true;
+    else {
+      return false;
+    }
   }
 
   /**
-   *
+   * Checks row value
    * @param x
    * @param y
    * @param value
    * @returns {boolean}
-     */
-  var checkRowWithException = function(x, y, value) {
+   */
+  var checkRow = function(_x, _y, value) {
     for(var i = 0; i < 9; i++)
     {
-      if(i !== x && grid[i][y].value === value) {
+      if(i !== _x && grid[i][_y].value === value) {
         return false;
       }
     }
@@ -52,32 +161,16 @@ function SudokuModel() {
   }
 
   /**
-   *
-   * @param x
-   * @param value
-   * @returns {boolean}
-     */
-  var checkColumn = function(x, value) {
-    for(var y = 0; y < 9; y++) {
-      if (grid[x][y].value === value) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
-   *
+   * Checks square
    * @param x
    * @param y
    * @param value
    * @param exclude
    * @returns {boolean}
-     */
-  var checkSquare = function(x, y, value) {
-    var squareY = Math.Floor(y) / 3 * 3;
-    var squareX = Math.Floor(y) / 3 * 3;
+   */
+  var checkSquare = function(_x, _y, value) {
+    var squareY = Math.round(_y) / 3 * 3;
+    var squareX = Math.round(_x) / 3 * 3;
 
     for(var testX = 0; testX < 3; testX++) {
       for(var testY = 0; testY < 3; testY++) {
@@ -91,15 +184,15 @@ function SudokuModel() {
   }
 
   /**
-   *
+   * Checks column
    * @param x
    * @param y
    * @param value
    * @returns {boolean}
    */
-  var checkColumnWithException = function(x, y, value) {
+  var checkColumn = function(_x, _y, value) {
     for(var i = 0; i < 9; i++) {
-      if (i !== y && grid[x][i].value === value) {
+      if (i !== _y && grid[_x][i].value === value) {
         return false;
       }
     }
@@ -108,27 +201,47 @@ function SudokuModel() {
   }
 
   /**
-   *
+   * Checks position
    * @param x
    * @param y
    * @returns {boolean}
    */
-  var checkPosition = function(x, y) {
-    var value = grid[x][y];
+  var checkPosition = function(_x, _y) {
+    var value = grid[_x][_y].value;
     return value !== 0
-      && checkRowWithException(x, y, value) && checkColumnWithException(x, y, value)
-      && checkSquare(x, y, value);
+      && checkRow(_x, _y, value) && checkColumn(_x, _y, value)
+      && checkSquare(_x, _y, value);
   }
 
+  // public
   /**
-   *
-   * @param x
-   * @param y
-   * @param value
-   * @returns {boolean}
-     */
-  var checkPositionWithValue = function(x, y, value) {
-    return checkRow(y, value) && checkColumn(x, value) && checkSquare(x, y, value);
+   * Initializes the grid
+   */
+  var initGrid = function() {
+    initBlockingNumbers();
+    initPosition(0, 0);
+
+    for(var i = 0; i < 9; i++) {
+      grid[i] = [];
+      for(var j = 0; j < 9; j++) {
+        grid[i][j] = {};
+        grid[i][j].value = 0
+      }
+    }
+
+    stepCount = 0;
+    while(grid[x][y].value === 0) {
+      generateNumber(true);
+      stepCount++;
+    }
+    //
+    // for(var x = 0; x < 9; x++) {
+    //   grid[x] = [];
+    //   for(var y = 0; y < 9; y++) {
+    //     grid[x][y] = {};
+    //     grid[x][y].value =
+    //   }
+    // }
   }
 
   /**
@@ -142,15 +255,14 @@ function SudokuModel() {
   // expose
   return {
     initGrid: initGrid,
-    getGrid: getGrid,
-    checkPosition: checkPosition,
-    checkPositionWithValue: checkPositionWithValue
+    getGrid: getGrid
   }
 }
 
-function SudokuNetworkService($rootScope, $firebaseArray, $q) {
+function SudokuNetworkService($rootScope, $firebaseArray, $firebaseObject) {
   // private
   var grids = [];
+
 
   // public
   /**
@@ -162,14 +274,23 @@ function SudokuNetworkService($rootScope, $firebaseArray, $q) {
   }
 
   /**
+   * Watcher
+   */
+  var sync = function(grid) {
+    grids.$watch(function(event) {
+    });
+  }
+
+  /**
    * Share a grid over firebase
    * @param grid
    */
-  var shareGrid = function(owner, grid) {
+  var addGrid = function(owner, grid) {
     if(angular.isDefined(owner) && angular.isDefined(grid)) {
       return grids.$add({
         'owner': owner,
-        'grid': grid
+        'grid': grid,
+        'date': new Date().toString()
       });
     }
   }
@@ -178,9 +299,11 @@ function SudokuNetworkService($rootScope, $firebaseArray, $q) {
    *
    * @param grid
      */
-  var saveGrid = function(grid) {
-    grids.$save(grid).then(function(ref) {
-      ref.key() === grid[index].$id; // true
+  var saveGrid = function(index) {
+    grids.$save(index).then(function(ref) {
+      log('cell updated', ref);
+    }).catch(function(err) {
+      log(err);
     });
   }
 
@@ -195,9 +318,10 @@ function SudokuNetworkService($rootScope, $firebaseArray, $q) {
   // expose
   return {
     loadGrids: loadGrids,
-    shareGrid: shareGrid,
+    addGrid: addGrid,
     getGrids: getGrids,
-    saveGrid: saveGrid
+    saveGrid: saveGrid,
+    sync: sync
   }
 }
 
@@ -227,19 +351,42 @@ function UIService($ionicPopup) {
   }
 }
 
+function AccountService() {
+  var isConnected = false,
+      settings = {
+        'sharingEnabled': false,
+      };
+
+  var getUserInfo = function() {
+    return Ionic.User.current().details;
+  }
+
+  // expose
+  return {
+    isConnected: isConnected,
+    getUserInfo: getUserInfo,
+    settings: settings
+  }
+}
+
 SudokuModel.$inject = [
 ];
 
 SudokuNetworkService.$inject = [
   '$rootScope',
-  '$firebaseArray'
+  '$firebaseArray',
+  '$firebaseObject'
 ];
 
 UIService.$inject = [
   '$ionicPopup'
 ]
 
+AccountService.$inject = [
+]
+
 angular.module('sudoku.services', ['firebase'])
   .factory('SudokuModel', SudokuModel)
   .factory('SudokuNetworkService', SudokuNetworkService)
   .factory('UIService', UIService)
+  .factory('AccountService', AccountService);

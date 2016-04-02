@@ -1,15 +1,17 @@
 <ion-view view-title="Sudoku">
   <ion-content class="padding" scroll="false">
-    {{selectedCell}}
-    <sudoku-grid grid="sudoku.grid" select-cell="sudoku.selectCell(cell)"></sudoku-grid>
+    <sudoku-grid grid="sudoku.grid.grid" select-cell="sudoku.selectCell(cell)"></sudoku-grid>
     <number-pad min="1" max="9" select-number="sudoku.selectNumber(number)"></number-pad>
     <div class="bar bar-footer">
       <div class="center">
         <button class="button button-outline button-positive center" on-tap="sudoku.newGrid()">
           New Grid
         </button>
-        <button class="button button-outline button-balanced center" on-tap="sudoku.shareGrid()">
+        <button ng-show="sudoku.sharingEnabled()" class="button button-outline button-balanced center" on-tap="sudoku.shareGrid()">
           Share
+        </button>
+        <button ng-show="sudoku.sharingEnabled()" class="button button-outline button-energized center" on-tap="sudoku.openGridsListModal()">
+          Load a grid
         </button>
       </div>
     </div>
