@@ -148,7 +148,7 @@ function SudokuModel() {
   }
 }
 
-function SudokuNetworkService($rootScope, firebaseArray) {
+function SudokuNetworkService($rootScope, $firebaseArray, $q) {
   // private
   var grids = [];
 
@@ -157,13 +157,31 @@ function SudokuNetworkService($rootScope, firebaseArray) {
    * Load the grids from firebase
    */
   var loadGrids = function() {
+    // fill grids array
+    grids = $firebaseArray($rootScope.gridsRef);
   }
 
   /**
    * Share a grid over firebase
    * @param grid
    */
-  var shareGrid = function(grid) {
+  var shareGrid = function(owner, grid) {
+    if(angular.isDefined(owner) && angular.isDefined(grid)) {
+      return grids.$add({
+        'owner': owner,
+        'grid': grid
+      });
+    }
+  }
+
+  /**
+   *
+   * @param grid
+     */
+  var saveGrid = function(grid) {
+    grids.$save(grid).then(function(ref) {
+      ref.key() === grid[index].$id; // true
+    });
   }
 
   /**
@@ -178,7 +196,34 @@ function SudokuNetworkService($rootScope, firebaseArray) {
   return {
     loadGrids: loadGrids,
     shareGrid: shareGrid,
-    getGrids: getGrids
+    getGrids: getGrids,
+    saveGrid: saveGrid
+  }
+}
+
+function UIService($ionicPopup) {
+  /**
+   * Displays an alert dialog
+   * @param title
+   * @param template
+   * @param cb
+     */
+  var showAlert = function(title, template, cb) {
+    var alertPopup = $ionicPopup.alert({
+      title: title,
+      template: template
+    });
+
+    alertPopup.then(function(res) {
+      if(typeof cb !== 'undefined') {
+        cb();
+      }
+    });
+  };
+
+  // expose
+  return {
+    showAlert: showAlert
   }
 }
 
@@ -190,5 +235,11 @@ SudokuNetworkService.$inject = [
   '$firebaseArray'
 ];
 
+UIService.$inject = [
+  '$ionicPopup'
+]
+
 angular.module('sudoku.services', ['firebase'])
-.factory('SudokuModel', SudokuModel)
+  .factory('SudokuModel', SudokuModel)
+  .factory('SudokuNetworkService', SudokuNetworkService)
+  .factory('UIService', UIService)

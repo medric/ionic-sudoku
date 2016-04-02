@@ -9731,7 +9731,18 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
+/* App */
 .center {
   margin: auto;
   text-align: center;
   clear: both; }
+
+.sudoku-grid__cell {
+  border: solid 1px #444;
+  text-align: center; }
+  .sudoku-grid__cell:hover {
+    background: #EEE;
+    cursor: pointer; }
+  .sudoku-grid__cell .sudoku-grid__cell--selected {
+    color: #E53935;
+    font-weight: 800; }

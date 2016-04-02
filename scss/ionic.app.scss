@@ -21,10 +21,31 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
-// App
+/* App */
+
+// Colors
+$grid-color: #444;
+
 .center{
   margin: auto;
   text-align:center;
   clear: both;
 }
+
+// Use BEM notation
+.sudoku-grid__cell {
+  border: solid 1px $grid-color;
+  text-align: center;
+
+  &:hover {
+    background: #EEE;
+    cursor: pointer;
+  }
+
+  .sudoku-grid__cell--selected {
+    color: #E53935;
+    font-weight: 800;
+  }
+}
+
 

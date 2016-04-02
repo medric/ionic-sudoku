@@ -3,21 +3,64 @@
  * @param $scope
  * @constructor
  */
-function SudokuCtrl($rootScope, $scope, SudokuModel) {
+function SudokuCtrl($rootScope, $scope, SudokuModel, SudokuNetworkService, UIService) {
   SudokuModel.initGrid();
+  SudokuNetworkService.loadGrids();
+
   // private
+  var selectedCell = undefined;
 
   // public
   var grid = SudokuModel.getGrid();
 
+  /**
+   * Init the grid
+   */
   var newGrid = function() {
     SudokuModel.initGrid();
+  }
+
+  /**
+   * Shares the grid through firebase
+   */
+  var shareGrid = function() {
+    SudokuNetworkService.shareGrid({
+      'username': 'medric'
+    }, grid).then(function() {
+      UIService.showAlert('Confirm', 'Grid successfully shared !');
+    })
+  }
+
+  /**
+   * Selects a cell
+   * @param cell
+     */
+  var selectCell = function(cell) {
+    if(angular.isDefined(cell)) {
+      selectedCell = cell;
+    }
+  }
+
+  /**
+   * Selects a number from the numeric pad
+   * @param number
+     */
+  var selectNumber = function(number) {
+    if(angular.isDefined(number) && Number.isInteger(number) && angular.isDefined(selectedCell)) {
+      // bind new value
+      selectedCell.value = number;
+      // if logged in
+      //SudokuNetworkService.saveGrid(grid)
+    }
   }
 
   // exports
   angular.extend(this, {
     grid: grid,
-    newGrid: newGrid
+    newGrid: newGrid,
+    shareGrid: shareGrid,
+    selectNumber: selectNumber,
+    selectCell: selectCell
   });
 }
 
@@ -57,7 +100,9 @@ function AccountCtrl($scope) {
 SudokuCtrl.$inject = [
   '$rootScope',
   '$scope',
-  'SudokuModel'
+  'SudokuModel',
+  'SudokuNetworkService',
+  'UIService'
 ];
 
 angular.module('sudoku.controllers', [])
