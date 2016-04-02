@@ -133,7 +133,6 @@ function SudokuModel() {
     if(blockingNumbers[x][y].indexOf(value) !== -1) {
       return true;
     } else if(checkPosition(x, y)) {
-      log('ff', value);
       blockingNumbers[x][y].push(value);
       return true;
     }
